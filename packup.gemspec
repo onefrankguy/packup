@@ -7,10 +7,7 @@ spec = Gem::Specification.new do |s|
   s.version = Packup::VERSION
 
   s.summary = 'A Rake helper for building Windows installers'
-  s.description = <<desc
-  This gem helps you write Windows installers. It provides a
-  simple DSL for authoring MSI packages.
-desc
+  s.description = 'This gem provides a simple DSL for making MSI packages.'
 
   s.authors = ['Frank Mitchell']
   s.email = 'me@frankmitchell.org'
