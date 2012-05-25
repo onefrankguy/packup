@@ -1,6 +1,16 @@
 require 'rubygems'
 require 'rake'
 require 'date'
+require 'rake/testtask'
+
+task :default => :test
+
+Rake::TestTask.new(:test) do |test|
+  test.libs << 'lib'
+  test.libs << 'test'
+  test.pattern = 'test/**/*_test.rb'
+  test.verbose = true
+end
 
 desc 'Generate .gemspec file'
 task :gemspec do
