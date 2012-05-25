@@ -4,6 +4,10 @@ Gem::Specification.new do |s|
   s.version = '0.0.1'
   s.date = '2012-05-24'
 
+  s.authors = ['Frank Mitchell']
+  s.email = 'me@frankmitchell.org'
+  s.homepage = 'https://github.com/elimossinary/packup'
+
   # Don't remove the manifest lines. The gemspec
   # task uses them to parse the this file.
   # = MANIFEST =
