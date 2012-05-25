@@ -33,4 +33,21 @@ class PackupTest < Test::Unit::TestCase
     end
     assert_nil inside
   end
+
+  def test_author_is_settable
+    inside = nil
+    Packup.stuff 'Magic' do
+      author 'Wizard'
+      inside = author
+    end
+    assert_equal 'Wizard', inside
+  end
+
+  def test_default_author_is_nil
+    inside = nil
+    Packup.stuff 'Magic' do
+      inside = author
+    end
+    assert_nil inside
+  end
 end
