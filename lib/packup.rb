@@ -1,4 +1,5 @@
 require 'rake'
+require 'erb'
 
 class Packup
   VERSION = '0.0.1'
@@ -46,7 +47,11 @@ class Packup
   def make_wxs_file_task
     return if Rake::FileTask.task_defined? "wix/#{name}.wxs"
     wxs = Rake::FileTask.define_task "wix/#{name}.wxs" do |t|
-      touch t.name
+      template_file = File.join(File.dirname(__FILE__), '..', 'templates', 'product.wxs.erb')
+      template_data = File.read template_file
+      template = ERB.new template_data
+      template_results = template.result(self.send(:binding)) 
+      File.open(t.name, 'w') { |io| io << template_results }
     end
     wxs.comment = "Create the #{name}.wxs file"
     wxs.enhance ['wix']
