@@ -29,25 +29,6 @@ task :uninstall do
   sh "gem uninstall #{name}"
 end
 
-desc 'Generate .gemspec file'
-task :gemspec do
-  spec = File.read(gemspec_file)
-  head, manifest, tail = spec.split("  # = MANIFEST =\n")
-
-  files = `git ls-files`.
-    split("\n").
-    sort.
-    reject { |file| file =~ /^\./ }.
-    reject { |file| file =~ /^(rdoc|pkg|wix)/ }.
-    map { |file| "    #{file}" }.
-    join("\n")
-
-  manifest = "  s.files = %w[\n#{files}\n  ]\n"
-  spec = [head, manifest, tail].join("  # = MANIFEST =\n")
-  File.open(gemspec_file, 'w') { |io| io << spec }
-  puts "Updated #{gemspec_file}"
-end
-
 def name
   @name ||= Dir['*.gemspec'].first.split('.').first
 end

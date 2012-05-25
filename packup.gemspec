@@ -3,7 +3,7 @@ $LOAD_PATH << File.join(File.dirname(__FILE__), 'lib')
 require 'date'
 require 'packup'
 
-Gem::Specification.new do |s|
+spec = Gem::Specification.new do |s|
   s.name = 'packup'
   s.version = Packup::VERSION
   s.date = Date.today.to_s
@@ -21,15 +21,8 @@ desc
   s.rdoc_options = ['--charset=UTF-8']
   s.extra_rdoc_files = %w[README.md]
 
-  # Don't remove the manifest lines. The gemspec
-  # task uses them to parse the this file.
-  # = MANIFEST =
-  s.files = %w[
-    README.md
-    lib/packup.rb
-    test/packup_test.rb
-  ]
-  # = MANIFEST =
+  s.files = `git ls-files`.split("\n")
+  s.files.reject! { |file| file =~ /^\./ }
 
   s.test_files = `git ls-files -- test/*_test.rb`.split("\n")
 end
