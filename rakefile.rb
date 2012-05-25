@@ -19,6 +19,16 @@ task :build do
   sh "gem build #{gemspec_file}"
 end
 
+desc 'Install the gem'
+task :install do
+  sh "gem install ./#{name}-#{version}.gem"
+end
+
+desc 'Uninstall this gem'
+task :uninstall do
+  sh "gem uninstall #{name}"
+end
+
 desc 'Generate .gemspec file'
 task :gemspec do
   spec = File.read(gemspec_file)
