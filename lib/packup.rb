@@ -11,5 +11,11 @@ class Packup
 
   def initialize name
     @name = name
+    @version = nil
+  end
+
+  def version value = nil
+    return @version if value.nil?
+    @version = value
   end
 end

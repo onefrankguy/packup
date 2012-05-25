@@ -16,4 +16,21 @@ class PackupTest < Test::Unit::TestCase
     end
     assert_equal 'Magic', inside
   end
+
+  def test_version_is_settable
+    inside = nil
+    Packup.stuff 'Magic' do
+      version '1.0.0'
+      inside = version
+    end
+    assert_equal '1.0.0', inside
+  end
+
+  def test_version_is_nil_if_not_set
+    inside = nil
+    Packup.stuff 'Magic' do
+      inside = version
+    end
+    assert_nil inside
+  end
 end
