@@ -17,7 +17,7 @@ class PackupTest < Test::Unit::TestCase
     assert_equal 'Magic', inside
   end
 
-  def test_version_is_settable
+  def test_set_version
     inside = nil
     Packup.stuff 'Magic' do
       version '1.0.0'
@@ -26,15 +26,15 @@ class PackupTest < Test::Unit::TestCase
     assert_equal '1.0.0', inside
   end
 
-  def test_version_is_nil_if_not_set
-    inside = nil
+  def test_default_version
+    inside = 0 
     Packup.stuff 'Magic' do
       inside = version
     end
     assert_nil inside
   end
 
-  def test_author_is_settable
+  def test_set_author
     inside = nil
     Packup.stuff 'Magic' do
       author 'Wizard'
@@ -43,8 +43,8 @@ class PackupTest < Test::Unit::TestCase
     assert_equal 'Wizard', inside
   end
 
-  def test_default_author_is_nil
-    inside = nil
+  def test_default_author
+    inside = 0 
     Packup.stuff 'Magic' do
       inside = author
     end
