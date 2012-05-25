@@ -31,5 +31,5 @@ desc
   ]
   # = MANIFEST =
 
-  s.test_files = s.files.select { |file| file =~ /^test\/test_.*\.rb/ }
+  s.test_files = `git ls-files -- test/*_test.rb`.split("\n")
 end
