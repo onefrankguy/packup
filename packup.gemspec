@@ -4,6 +4,12 @@ Gem::Specification.new do |s|
   s.version = '0.0.1'
   s.date = '2012-05-24'
 
+  s.summary = 'A Rake helper for building Windows installers'
+  s.description = <<desc
+  This gem helps you write Windows installers. It provides a
+  simple DSL for authoring MSI packages.
+desc
+
   s.authors = ['Frank Mitchell']
   s.email = 'me@frankmitchell.org'
   s.homepage = 'https://github.com/elimossinary/packup'
