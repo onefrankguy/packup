@@ -8,6 +8,9 @@ Gem::Specification.new do |s|
   s.email = 'me@frankmitchell.org'
   s.homepage = 'https://github.com/elimossinary/packup'
 
+  s.rdoc_options = ['--charset=UTF-8']
+  s.extra_rdoc_files = %w[README.md]
+
   # Don't remove the manifest lines. The gemspec
   # task uses them to parse the this file.
   # = MANIFEST =
