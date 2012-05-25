@@ -34,8 +34,6 @@ task :gemspec do
   spec = File.read(gemspec_file)
   head, manifest, tail = spec.split("  # = MANIFEST =\n")
 
-  replace_header(head, :name)
-
   files = `git ls-files`.
     split("\n").
     sort.
@@ -61,8 +59,4 @@ end
 
 def gemspec_file
   "#{name}.gemspec"
-end
-
-def replace_header head, header
-  head.sub!(/(\.#{header}\s*= ').*'/) { "#{$1}#{send(header)}'" }
 end

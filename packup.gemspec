@@ -4,7 +4,6 @@ require 'date'
 require 'packup'
 
 Gem::Specification.new do |s|
-  # These will be modified by the rake gemspec task.
   s.name = 'packup'
   s.version = Packup::VERSION
   s.date = Date.today.to_s
