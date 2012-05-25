@@ -32,6 +32,7 @@ class Packup
 
   def make_tasks
     make_wix_folder_task
+    make_wxs_file_task
   end
 
   def make_wix_folder_task
@@ -40,5 +41,14 @@ class Packup
       mkpath t.name
     end
     wix.comment = 'Create the WiX folder'
+  end
+
+  def make_wxs_file_task
+    return if Rake::FileTask.task_defined? "wix/#{name}.wxs"
+    wxs = Rake::FileTask.define_task "wix/#{name}.wxs" do |t|
+      touch t.name
+    end
+    wxs.comment = "Create the #{name}.wxs file"
+    wxs.enhance ['wix']
   end
 end
