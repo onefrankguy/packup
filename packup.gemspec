@@ -1,9 +1,12 @@
+$LOAD_PATH << File.join(File.dirname(__FILE__), 'lib')
+
 require 'date'
+require 'packup'
 
 Gem::Specification.new do |s|
   # These will be modified by the rake gemspec task.
   s.name = 'packup'
-  s.version = '0.0.1'
+  s.version = Packup::VERSION
   s.date = Date.today.to_s
 
   s.summary = 'A Rake helper for building Windows installers'

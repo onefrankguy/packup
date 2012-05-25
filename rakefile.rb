@@ -35,7 +35,6 @@ task :gemspec do
   head, manifest, tail = spec.split("  # = MANIFEST =\n")
 
   replace_header(head, :name)
-  replace_header(head, :version)
 
   files = `git ls-files`.
     split("\n").
