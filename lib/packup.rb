@@ -34,12 +34,13 @@ class Packup
   def make_tasks
     make_wix_folder_task
     make_wxs_file_task
+    make_wixobj_file_task
   end
 
   def make_wix_folder_task
     return if Rake::FileTask.task_defined? 'wix'
     wix = Rake::FileTask.define_task 'wix' do |t|
-      mkpath t.name
+      FileUtils.mkpath t.name
     end
     wix.comment = 'Create the WiX folder'
   end
@@ -50,10 +51,19 @@ class Packup
       template_file = File.join(File.dirname(__FILE__), '..', 'templates', 'product.wxs.erb')
       template_data = File.read template_file
       template = ERB.new template_data
-      template_results = template.result(self.send(:binding)) 
+      template_results = template.result send(:binding)
       File.open(t.name, 'w') { |io| io << template_results }
     end
     wxs.comment = "Create the #{name}.wxs file"
     wxs.enhance ['wix']
+  end
+
+  def make_wixobj_file_task
+    return if Rake::FileTask.task_defined? "wix/#{name}.wixobj"
+    wixobj = Rake::FileTask.define_task "wix/#{name}.wixobj" do |t|
+      sh "candle -nologo wix/#{name}.wxs -o #{t.name}"
+    end
+    wixobj.comment = "Create the #{name}.wixobj file"
+    wixobj.enhance ["wix/#{name}.wxs"]
   end
 end

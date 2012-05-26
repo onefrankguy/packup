@@ -17,4 +17,9 @@ class PackupTasksTest < Test::Unit::TestCase
     Packup.stuff 'Magic'
     assert Rake::FileTask.task_defined? 'wix/Magic.wxs'
   end
+
+  def test_create_wixobj_file_task
+    Packup.stuff 'Magic'
+    assert Rake::FileTask.task_defined? 'wix/Magic.wixobj'
+  end
 end
