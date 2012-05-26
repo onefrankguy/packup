@@ -4,7 +4,7 @@ require 'packup'
 require 'rexml/document'
 require 'test/unit'
 
-class PackupTasksTest < Test::Unit::TestCase
+class PackupWxsTest < Test::Unit::TestCase
   def setup
     Rake::Task.clear
   end
