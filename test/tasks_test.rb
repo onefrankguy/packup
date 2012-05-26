@@ -22,4 +22,9 @@ class PackupTasksTest < Test::Unit::TestCase
     Packup.stuff 'Magic'
     assert Rake::FileTask.task_defined? 'wix/Magic.wixobj'
   end
+
+  def test_create_msi_file_task
+    Packup.stuff 'Magic'
+    assert Rake::FileTask.task_defined? 'wix/Magic.msi'
+  end
 end

@@ -35,6 +35,7 @@ class Packup
     make_wix_folder_task
     make_wxs_file_task
     make_wixobj_file_task
+    make_msi_file_task
   end
 
   def make_wix_folder_task
@@ -65,5 +66,11 @@ class Packup
     end
     wixobj.comment = "Create the #{name}.wixobj file"
     wixobj.enhance ["wix/#{name}.wxs"]
+  end
+
+  def make_msi_file_task
+    return if Rake::FileTask.task_defined? "wix/#{name}.msi"
+    msi = Rake::FileTask.define_task "wix/#{name}.msi"
+    msi.comment = "Create the #{name}.msi file"
   end
 end
