@@ -70,7 +70,10 @@ class Packup
 
   def make_msi_file_task
     return if Rake::FileTask.task_defined? "wix/#{name}.msi"
-    msi = Rake::FileTask.define_task "wix/#{name}.msi"
+    msi = Rake::FileTask.define_task "wix/#{name}.msi" do |t|
+      FileUtils.touch t.name
+    end
     msi.comment = "Create the #{name}.msi file"
+    msi.enhance ['wix']
   end
 end
