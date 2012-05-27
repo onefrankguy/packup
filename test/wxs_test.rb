@@ -65,4 +65,14 @@ class PackupWxsTest < Test::Unit::TestCase
     dirs.delete_if { |dir| dir.attributes['Id'] != 'INSTALLDIR' }
     assert_equal 'Magic', dirs.first.attributes['Name']
   end
+
+  def test_wxs_file_has_file_component
+    Packup.stuff 'Magic' do
+      file 'README.md' => 'README.md'
+    end
+    Rake::Task['wix/Magic.wxs'].invoke
+    wxs = REXML::Document.new File.read('wix/Magic.wxs')
+    elem = REXML::XPath.first wxs, '//File'
+    assert_equal 'README.md', elem.attributes['Source']
+  end
 end

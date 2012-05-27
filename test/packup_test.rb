@@ -50,4 +50,21 @@ class PackupTest < Test::Unit::TestCase
     end
     assert_nil inside
   end
+
+  def test_set_files
+    inside = nil
+    Packup.stuff 'Magic' do
+      file 'rabbit.txt' => 'hat.txt'
+      inside = files
+    end
+    assert_equal 'hat.txt', inside['rabbit.txt']
+  end
+
+  def test_default_files
+    inside = nil
+    Packup.stuff 'Magic' do
+      inside = files
+    end
+    assert_equal 0, inside.length
+  end
 end

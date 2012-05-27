@@ -14,11 +14,13 @@ class Packup
   end
 
   attr_reader :name
+  attr_reader :files
 
   def initialize name
     @name = name
     @version = nil
     @author = nil
+    @files = {}
   end
 
   def version value = nil
@@ -29,6 +31,10 @@ class Packup
   def author value = nil
     return @author if value.nil?
     @author = value
+  end
+
+  def file values
+    @files.merge! values
   end
 
   def make_tasks

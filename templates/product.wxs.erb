@@ -15,16 +15,37 @@
     %>"
   >
 
-  <Package Compressed="yes" />
-  <MediaTemplate EmbedCab="yes" />
+   <Package Compressed="yes" />
+   <MediaTemplate EmbedCab="yes" />
 
-  <Directory Id="TARGETDIR" Name="SourceDir">
-    <Directory Id="ProgramFilesFolder">
-      <Directory Id="ManufacturerFolder" Name="<%= author %>">
-        <Directory Id="INSTALLDIR" Name="<%= name %>" />
-      </Directory>
-    </Directory>
-  </Directory>
-
+   <FeatureRef Id="<%= name %>Feature" />
   </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+     <Directory Id="ProgramFilesFolder">
+       <Directory Id="ManufacturerFolder" Name="<%= author %>">
+         <Directory Id="INSTALLDIR" Name="<%= name %>" />
+       </Directory>
+     </Directory>
+   </Directory>
+  </Fragment>
+
+  <Fragment>
+    <Feature Id="<%= name %>Feature" Level="1">
+    <% files.each do |unused, path| %>
+      <ComponentRef Id="<%= File.basename(path) %>" />
+    <% end %>
+    </Feature>
+  </Fragment>
+
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+    <% files.each do |unused, path| %>
+      <Component Id="<%= File.basename(path) %>">
+        <File Id="<%= File.basename(path) %>" Source="<%= path %>" />
+      </Component>
+    <% end %>
+    </DirectoryRef>
+  </Fragment>
 </Wix>
