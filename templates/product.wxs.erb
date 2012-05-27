@@ -6,6 +6,13 @@
     Name="<%= name %>"
     Version="<%= version %>"
     Manufacturer="<%= author %>"
+    UpgradeCode="<%=
+      require 'digest/md5'
+      hex = Digest::MD5.hexdigest(name).upcase.scan(/.{4}/)
+      hex[0,2] = hex[0,2].join('')
+      hex[-3,3] = hex[-3,3].join('')
+      hex.join('-')
+    %>"
   >
   <Package Compressed="yes" />
   <MediaTemplate EmbedCab="yes" />

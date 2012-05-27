@@ -37,4 +37,12 @@ class PackupWxsTest < Test::Unit::TestCase
     product = REXML::XPath.first(wxs, "/Wix/Product")
     assert_equal 'Wizard', product.attributes['Manufacturer']
   end
+
+  def test_wxs_file_has_upgrade_code
+    Packup.stuff 'Magic'
+    Rake::Task['wix/Magic.wxs'].invoke
+    wxs = REXML::Document.new File.read('wix/Magic.wxs')
+    product = REXML::XPath.first wxs, '/Wix/Product'
+    assert_equal '02700E45-4D67-9F31-F27C-6F0768986DD1', product.attributes['UpgradeCode']
+  end
 end
