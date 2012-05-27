@@ -14,7 +14,17 @@
       hex.join('-')
     %>"
   >
+
   <Package Compressed="yes" />
   <MediaTemplate EmbedCab="yes" />
+
+  <Directory Id="TARGETDIR" Name="SourceDir">
+    <Directory Id="ProgramFilesFolder">
+      <Directory Id="ManufacturerFolder" Name="<%= author %>">
+        <Directory Id="INSTALLDIR" Name="<%= name %>" />
+      </Directory>
+    </Directory>
+  </Directory>
+
   </Product>
 </Wix>

@@ -45,4 +45,24 @@ class PackupWxsTest < Test::Unit::TestCase
     product = REXML::XPath.first wxs, '/Wix/Product'
     assert_equal '02700E45-4D67-9F31-F27C-6F0768986DD1', product.attributes['UpgradeCode']
   end
+
+  def test_wxs_file_has_manufacturer_folder
+    Packup.stuff 'Magic' do
+      author 'Wizard'
+    end
+    Rake::Task['wix/Magic.wxs'].invoke
+    wxs = REXML::Document.new File.read('wix/Magic.wxs')
+    dirs = REXML::XPath.match wxs, '//Directory'
+    dirs.delete_if { |dir| dir.attributes['Id'] != 'ManufacturerFolder' }
+    assert_equal 'Wizard', dirs.first.attributes['Name']
+  end
+
+  def test_wxs_file_has_product_folder
+    Packup.stuff 'Magic'
+    Rake::Task['wix/Magic.wxs'].invoke
+    wxs = REXML::Document.new File.read('wix/Magic.wxs')
+    dirs = REXML::XPath.match wxs, '//Directory'
+    dirs.delete_if { |dir| dir.attributes['Id'] != 'INSTALLDIR' }
+    assert_equal 'Magic', dirs.first.attributes['Name']
+  end
 end
