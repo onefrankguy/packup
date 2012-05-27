@@ -32,6 +32,17 @@
   </Fragment>
 
   <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+    <% files.each do |unused, path| %>
+      <% id = File.dirname(path) %>
+      <% if id != '.' %>
+      <Directory Id="<%= id %>" Name="<%= id %>" />
+      <% end %>
+    <% end %>
+    </DirectoryRef>
+  </Fragment>
+
+  <Fragment>
     <Feature Id="<%= name %>Feature" Level="1">
     <% files.each do |unused, path| %>
       <ComponentRef Id="<%= File.basename(path) %>" />
@@ -40,12 +51,14 @@
   </Fragment>
 
   <Fragment>
-    <DirectoryRef Id="INSTALLDIR">
-    <% files.each do |unused, path| %>
-      <Component Id="<%= File.basename(path) %>">
-        <File Id="<%= File.basename(path) %>" Source="<%= path %>" />
-      </Component>
+    <% files.each do |source, dest| %>
+      <% dir = File.dirname(dest) %>
+      <% dir = 'INSTALLDIR' if dir == '.' %>
+      <DirectoryRef Id="<%= dir %>">
+        <Component Id="<%= File.basename(source) %>">
+          <File Id="<%= File.basename(source) %>" Source="<%= source %>" />
+        </Component>
+      </DirectoryRef>
     <% end %>
-    </DirectoryRef>
   </Fragment>
 </Wix>
