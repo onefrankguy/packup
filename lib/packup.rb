@@ -2,7 +2,19 @@ require 'rake'
 require 'erb'
 
 class Packup
+  ##
+  # In a pre-alpha state at the moment.
+
   VERSION = '0.0.1'
+
+  ##
+  # Excutes the Packup DSL to define your package's definition
+  # (which internalliy creates Rake tasks). All Packup attributes and
+  # methods are available within +block+. Eg:
+  #
+  #   Packup.stuff name do
+  #     # ... package specific data ...
+  #   end
 
   def self.stuff name, &block
     package = self.new name
@@ -11,8 +23,20 @@ class Packup
     package
   end
 
+  ##
+  # *MANDATORY*: The name of the package.
+  #
+  # Set with Packup.stuff.
+
   attr_reader :name
+
+  ##
+  # Optional: Files the package will install. 
+
   attr_reader :files
+
+  ##
+  # Creates a newly initialized package description.
 
   def initialize name
     @name = name
@@ -21,30 +45,71 @@ class Packup
     @files = {}
   end
 
+  ##
+  # Returns the package's version. Sets the version to +value+ if given.
+
   def version value = nil
     return @version if value.nil?
     @version = value
   end
+
+  ##
+  # Returns the package's author. Sets the author to +value+ if given.
 
   def author value = nil
     return @author if value.nil?
     @author = value
   end
 
+  ##
+  # Adds files to the package. +values+ is a Hash from source to
+  # destination. Eg:
+  #
+  #   file 'source/file' => 'destination/file'
+  #
+  # or
+  #
+  #   file {
+  #     'src/wand.exe' => 'bin/wand.exe',
+  #     'src/wand.chm' => 'doc/wand.chm'
+  #   }
+  #
+  # Implicitly, this creates Rake tasks to copy the files from source to
+  # destination. You can skip the creation of those tasks by manually
+  # placing your files in the <tt>wix/src</tt> folder. Eg:
+  #
+  #   task :setup do
+  #     mkpath 'wix/src'
+  #     cp_r 'src', 'wix/src'
+  #   end
+  #
+  #   Packup.stuff 'Magic'
+  #
+  #   Rake::Task['wix/Sourcery.wxs'].enhance [:setup]
+
   def file values
     @files.merge! values
   end
+
+  ##
+  # Finalizes the package description.
 
   def post_process
     bind_files
     make_tasks
   end
 
+  ##
+  # Makes all destination file paths relative to INSTALLDIR.
+
   def bind_files
     @files.each do |source, destination|
       @files[source] = File.join('wix', 'src', destination)
     end
   end
+
+  ##
+  # Generates all the Rake tasks.
 
   def make_tasks
     make_clean_task
@@ -59,6 +124,9 @@ class Packup
     make_test_task
   end
 
+  ##
+  # Generates the :clean task, which deletes all the generated files.
+
   def make_clean_task
     return if Rake::Task.task_defined? :clean
     task = Rake::Task.define_task :clean do
@@ -67,6 +135,9 @@ class Packup
     task.comment = 'Remove the WiX folder'
   end
 
+  ##
+  # Generates the 'wix' task.
+
   def make_wix_folder_task
     return if Rake::FileTask.task_defined? 'wix'
     wix = Rake::FileTask.define_task 'wix' do |t|
@@ -74,6 +145,19 @@ class Packup
     end
     wix.comment = 'Create the WiX folder'
   end
+
+  ##
+  # Generates tasks to copy files from source to destination. One task
+  # is generated for each file. Destination file tasks trigger source
+  # file tasks if they exist. So you can preprocess files. Eg:
+  #
+  #   file 'magic.min.js' do
+  #     sh 'compress magic.js > magic.min.js'
+  #   end
+  #
+  #   Packup.stuff 'Magic' do
+  #     file 'magic.min.js' => 'scripts/magic.min.js'
+  #   end
 
   def make_copy_file_tasks
     @files.each do |source, destination|
@@ -91,6 +175,9 @@ class Packup
       end
     end
   end
+
+  ##
+  # Generates the 'wix/Sourcery.wxs' task.
 
   def make_sourcery_wxs_file_task
     return if Rake::FileTask.task_defined? 'wix/Sourcery.wxs'
@@ -114,6 +201,9 @@ class Packup
     sourcery.enhance @files.values
   end
 
+  ##
+  # Generates the 'wix/Sourcery.wixobj' task.
+
   def make_sourcery_wixobj_file_task
     return unless Rake::FileTask.task_defined? 'wix/Sourcery.wxs'
     wixobj = Rake::FileTask.define_task 'wix/Sourcery.wixobj' do |t|
@@ -122,6 +212,9 @@ class Packup
     wixobj.comment = 'Create the Sourcery.wixobj file'
     wixobj.enhance ['wix/Sourcery.wxs']
   end
+
+  ##
+  # Generates the 'wix/name.wxs' task.
 
   def make_product_wxs_file_task
     return if Rake::FileTask.task_defined? "wix/#{name}.wxs"
@@ -139,6 +232,9 @@ class Packup
     end
   end
 
+  ##
+  # Generates the 'wix/name.wixobj' task.
+
   def make_product_wixobj_file_task
     return if Rake::FileTask.task_defined? "wix/#{name}.wixobj"
     wixobj = Rake::FileTask.define_task "wix/#{name}.wixobj" do |t|
@@ -147,6 +243,9 @@ class Packup
     wixobj.comment = "Create the #{name}.wixobj file"
     wixobj.enhance ["wix/#{name}.wxs"]
   end
+
+  ##
+  # Generates the 'wix/name.msi' task.
 
   def make_msi_file_task
     return if Rake::FileTask.task_defined? "wix/#{name}.msi"
@@ -159,12 +258,18 @@ class Packup
     msi.enhance wixobjs
   end
 
+  ##
+  # Generates the :msi task, which creates the MSI.
+
   def make_msi_task
     return if Rake::Task.task_defined? :msi
     msi = Rake::Task.define_task :msi
     msi.comment = "Create the MSI"
     msi.enhance ["wix/#{name}.msi"]
   end
+
+  ##
+  # Generates the :test task, wich validates the MSI.
 
   def make_test_task
     return if Rake::Task.task_defined? :test
