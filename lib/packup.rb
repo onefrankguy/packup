@@ -41,6 +41,7 @@ class Packup
     make_wix_folder_task
     make_source_file_tasks
     make_destination_file_tasks
+    make_sourcery_file_task
     make_wxs_file_task
     make_wixobj_file_task
     make_msi_file_task
@@ -76,6 +77,13 @@ class Packup
       FileUtils.mkpath t.name
     end
     wix.comment = 'Create the WiX folder'
+  end
+
+  def make_sourcery_file_task
+    return if Rake::FileTask.task_defined? 'wix/Sourcery.wxs'
+    return if @files.empty?
+    sourcery = Rake::FileTask.define_task 'wix/Sourcery.wxs'
+    sourcery.comment = 'Create the Sourcery.wxs file'
   end
 
   def make_wxs_file_task
