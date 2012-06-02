@@ -9,6 +9,8 @@ spec = Gem::Specification.new do |s|
   s.summary = 'A Rake helper for building Windows installers'
   s.description = 'This gem provides a simple DSL for making MSI packages.'
 
+  s.requirements << 'WiX Toolset, v3.6 or greater'
+
   s.author = 'Frank Mitchell'
   s.email = 'me@frankmitchell.org'
   s.homepage = 'https://github.com/elimossinary/packup'
