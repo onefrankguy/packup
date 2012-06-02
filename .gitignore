@@ -1,3 +1,4 @@
 .vimrc
+.yardoc/
 *.gem
 wix/*

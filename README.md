@@ -31,7 +31,7 @@ Packup requires the [WiX Toolset][wix] be installed, and the binaries be reachab
 License
 -------
 
-Packup is available under an [MIT-style][mit] license.
+Packup is available under an [MIT-style][mit] license. See the {file:LICENSE.md} document for more information.
 
 [wix]: http://wixtoolset.org/ "The WiX toolset builds Windows installation packages from XML source code."
 [mit]:  http://opensource.org/license/MIT "Open Source Initiative OSI - The MIT License"
