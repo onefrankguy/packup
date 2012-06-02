@@ -39,9 +39,7 @@ class Packup
 
   def post_process
     @files.each do |source, destination|
-      unless destination.start_with? 'wix/src'
-        @files[source] = File.join('wix', 'src', destination)
-      end
+      @files[source] = File.join('wix', 'src', destination)
     end
     make_tasks
   end
