@@ -57,7 +57,7 @@ class PackupTest < Test::Unit::TestCase
       file 'rabbit.txt' => 'hat.txt'
       inside = files
     end
-    assert_equal 'hat.txt', inside['rabbit.txt']
+    assert_equal 'wix/src/hat.txt', inside['rabbit.txt']
   end
 
   def test_default_files

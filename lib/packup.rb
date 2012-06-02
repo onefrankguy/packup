@@ -9,7 +9,7 @@ class Packup
   def self.stuff name, &block
     package = self.new name
     package.instance_eval &block if block_given?
-    package.make_tasks
+    package.post_process
     package
   end
 
@@ -35,6 +35,15 @@ class Packup
 
   def file values
     @files.merge! values
+  end
+
+  def post_process
+    @files.each do |source, destination|
+      unless destination.start_with? 'wix/src'
+        @files[source] = File.join('wix', 'src', destination)
+      end
+    end
+    make_tasks
   end
 
   def make_tasks
@@ -67,15 +76,14 @@ class Packup
 
   def make_destination_file_tasks
     @files.each do |source, destination|
-      dest = File.join('wix', 'src', destination)
-      next if Rake::FileTask.task_defined? dest
+      next if Rake::FileTask.task_defined? destination
       type = File.directory?(source) ? 'folder' : 'file'
-      task = Rake::FileTask.define_task dest do |t|
+      task = Rake::FileTask.define_task destination do |t|
         folder = File.dirname(t.name)
         FileUtils.mkpath folder unless File.directory? folder
         FileUtils.copy source, t.name
       end
-      task.comment = "Create the #{dest} #{type}"
+      task.comment = "Create the #{destination} #{type}"
       task.enhance ['wix', source]
     end
   end
@@ -98,7 +106,7 @@ class Packup
     end
     sourcery.comment = 'Create the Sourcery.wxs file'
     sourcery.enhance ['wix']
-    sourcery.enhance @files.values.map { |dest| File.join('wix', 'src', dest) }
+    sourcery.enhance @files.values
   end
 
   def make_sourcery_wixobj_file_task
