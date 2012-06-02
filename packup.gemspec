@@ -15,6 +15,7 @@ spec = Gem::Specification.new do |s|
   s.author = 'Frank Mitchell'
   s.email = 'me@frankmitchell.org'
   s.homepage = 'https://github.com/elimossinary/packup'
+  s.license = 'MIT'
 
   s.files = `git ls-files`.split("\n")
   s.files.reject! { |file| file =~ /^\./ }

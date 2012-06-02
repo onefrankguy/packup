@@ -28,4 +28,10 @@ Dependencies
 
 Packup requires the [WiX Toolset][wix] be installed, and the binaries be reachable from the PATH environment variable.
 
+License
+-------
+
+Packup is available under an [MIT-style][mit] license.
+
 [wix]: http://wixtoolset.org/ "The WiX toolset builds Windows installation packages from XML source code."
+[mit]:  http://opensource.org/license/MIT "Open Source Initiative OSI - The MIT License"
