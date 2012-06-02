@@ -15,7 +15,7 @@ class PackupMsiTest < Test::Unit::TestCase
       author 'Wizard'
       file 'README.md' => 'README.md'
     end
-    Rake::Task['wix/Magic.msi'].invoke
+    Rake::Task[:msi].invoke
     assert File.exists? 'wix/Magic.msi'
   end
 end

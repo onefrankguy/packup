@@ -54,6 +54,7 @@ class Packup
     make_product_wxs_file_task
     make_product_wixobj_file_task
     make_msi_file_task
+    make_msi_task
   end
 
   def make_clean_task
@@ -159,5 +160,12 @@ class Packup
     end
     msi.comment = "Create the #{name}.msi file"
     msi.enhance wixobjs
+  end
+
+  def make_msi_task
+    return if Rake::Task.task_defined? :msi
+    msi = Rake::Task.define_task :msi
+    msi.comment = "Create the MSI"
+    msi.enhance ["wix/#{name}.msi"]
   end
 end
