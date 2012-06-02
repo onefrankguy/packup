@@ -24,7 +24,7 @@ task :install do
   sh "gem install ./#{name}-#{version}.gem"
 end
 
-desc 'Uninstall this gem'
+desc 'Uninstall the gem'
 task :uninstall do
   sh "gem uninstall #{name}"
 end
