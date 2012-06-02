@@ -5,6 +5,7 @@ require 'packup'
 spec = Gem::Specification.new do |s|
   s.name = 'packup'
   s.version = Packup::VERSION
+  s.required_ruby_version = '~> 1.9'
 
   s.summary = 'A Rake helper for building Windows installers'
   s.description = 'This gem provides a simple DSL for making MSI packages.'
