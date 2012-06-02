@@ -4,8 +4,6 @@ require 'erb'
 class Packup
   VERSION = '0.0.1'
 
-  include Rake::DSL
-
   def self.stuff name, &block
     package = self.new name
     package.instance_eval &block if block_given?
@@ -104,7 +102,7 @@ class Packup
         args << '-dr INSTALLDIR'
         args << '-var var.Source'
         args = args.join(' ')
-        sh "heat dir wix/src #{args} -out #{t.name}"
+        Rake.sh "heat dir wix/src #{args} -out #{t.name}"
       end
     end
     sourcery.comment = 'Create the Sourcery.wxs file'
@@ -115,7 +113,7 @@ class Packup
   def make_sourcery_wixobj_file_task
     return unless Rake::FileTask.task_defined? 'wix/Sourcery.wxs'
     wixobj = Rake::FileTask.define_task 'wix/Sourcery.wixobj' do |t|
-      sh "candle -nologo wix/Sourcery.wxs -dSource=wix/src -o #{t.name}"
+      Rake.sh "candle -nologo wix/Sourcery.wxs -dSource=wix/src -o #{t.name}"
     end
     wixobj.comment = 'Create the Sourcery.wixobj file'
     wixobj.enhance ['wix/Sourcery.wxs']
@@ -140,7 +138,7 @@ class Packup
   def make_product_wixobj_file_task
     return if Rake::FileTask.task_defined? "wix/#{name}.wixobj"
     wixobj = Rake::FileTask.define_task "wix/#{name}.wixobj" do |t|
-      sh "candle -nologo wix/#{name}.wxs -o #{t.name}"
+      Rake.sh "candle -nologo wix/#{name}.wxs -o #{t.name}"
     end
     wixobj.comment = "Create the #{name}.wixobj file"
     wixobj.enhance ["wix/#{name}.wxs"]
@@ -151,7 +149,7 @@ class Packup
     wixobjs = Rake::FileTask.tasks.select { |t| t.name.end_with? '.wixobj' }
     wixobjs.map! { |t| t.name }
     msi = Rake::FileTask.define_task "wix/#{name}.msi" do |t|
-      sh "light -nologo -sval #{wixobjs.join(' ')} -o #{t.name}"
+      Rake.sh "light -nologo -sval #{wixobjs.join(' ')} -o #{t.name}"
     end
     msi.comment = "Create the #{name}.msi file"
     msi.enhance wixobjs
@@ -167,7 +165,7 @@ class Packup
   def make_test_task
     return if Rake::Task.task_defined? :test
     test = Rake::Task.define_task :test do
-      sh "smoke -nologo wix/#{name}.msi"
+      Rake.sh "smoke -nologo wix/#{name}.msi"
     end
     test.comment = 'Test the MSI'
   end
