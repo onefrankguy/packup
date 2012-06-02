@@ -28,11 +28,23 @@ class PackupTasksTest < Test::Unit::TestCase
     assert Rake::FileTask.task_defined? 'wix/Magic.msi'
   end
 
-  def test_create_source_file_task
+  def test_bind_source_file_task_if_exists
+    Rake::FileTask.define_task 'README.md' do
+      FileUtils.touch 'README.md'
+    end
     Packup.stuff 'Magic' do
       file 'README.md' => 'README.md'
     end
-    assert Rake::FileTask.task_defined? 'README.md'
+    reqs = Rake::FileTask['wix/src/README.md'].prerequisites
+    assert_equal ['wix', 'README.md'], reqs
+  end
+
+  def test_skip_source_file_task_if_not_exists
+    Packup.stuff 'Magic' do
+      file 'README.md' => 'README.md'
+    end
+    reqs = Rake::FileTask['wix/src/README.md'].prerequisites
+    assert_equal ['wix'], reqs
   end
 
   def test_create_destination_file_task

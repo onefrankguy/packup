@@ -47,7 +47,6 @@ class Packup
   def make_tasks
     make_clean_task
     make_wix_folder_task
-    make_source_file_tasks
     make_destination_file_tasks
     make_sourcery_wxs_file_task
     make_sourcery_wixobj_file_task
@@ -74,15 +73,6 @@ class Packup
     wix.comment = 'Create the WiX folder'
   end
 
-  def make_source_file_tasks 
-    files = @files.keys.reject { |src| Rake::FileTask.task_defined?(src) }
-    files.each do |source|
-      type = File.directory?(source) ? 'folder' : 'file'
-      task = Rake::FileTask.define_task source
-      task.comment = "Create the #{source} #{type}"
-    end
-  end
-
   def make_destination_file_tasks
     @files.each do |source, destination|
       next if Rake::FileTask.task_defined? destination
@@ -93,7 +83,10 @@ class Packup
         FileUtils.copy source, t.name
       end
       task.comment = "Create the #{destination} #{type}"
-      task.enhance ['wix', source]
+      task.enhance ['wix']
+      if Rake::FileTask.task_defined? source
+        task.enhance [source]
+      end
     end
   end
 
