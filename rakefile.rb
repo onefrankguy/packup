@@ -7,11 +7,11 @@ CLEAN.include '*.gem'
 
 task :default => :test
 
-Rake::TestTask.new(:test) do |test|
-  test.libs << 'lib'
-  test.libs << 'test'
-  test.pattern = 'test/**/*_test.rb'
-  test.verbose = true
+Rake::TestTask.new do |t|
+  t.libs << 'lib'
+  t.libs << 'test'
+  t.pattern = 'test/**/*_test.rb'
+  t.verbose = true
 end
 
 desc 'Build the gem'
