@@ -36,10 +36,14 @@ class Packup
   end
 
   def post_process
+    bind_files
+    make_tasks
+  end
+
+  def bind_files
     @files.each do |source, destination|
       @files[source] = File.join('wix', 'src', destination)
     end
-    make_tasks
   end
 
   def make_tasks
