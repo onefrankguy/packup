@@ -53,4 +53,16 @@ class PackupTasksTest < Test::Unit::TestCase
     Packup.stuff 'Magic'
     assert !Rake::FileTask.task_defined?('wix/Sourcery.wxs')
   end
+
+  def test_create_sourcery_wixobj_task_if_files
+    Packup.stuff 'Magic' do
+      file 'README.md' => 'README.md'
+    end
+    assert Rake::FileTask.task_defined?('wix/Sourcery.wixobj')
+  end
+
+  def test_skips_sourcery_wixobj_task_if_no_files
+    Packup.stuff 'Magic'
+    assert !Rake::FileTask.task_defined?('wix/Sourcery.wixobj')
+  end
 end

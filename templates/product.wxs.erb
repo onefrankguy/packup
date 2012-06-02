@@ -31,34 +31,17 @@
    </Directory>
   </Fragment>
 
-  <Fragment>
-    <DirectoryRef Id="INSTALLDIR">
-    <% files.each do |unused, path| %>
-      <% id = File.dirname(path) %>
-      <% if id != '.' %>
-      <Directory Id="<%= id %>" Name="<%= id %>" />
-      <% end %>
-    <% end %>
-    </DirectoryRef>
-  </Fragment>
-
+  <% unless @files.empty? %>
   <Fragment>
     <Feature Id="<%= name %>Feature" Level="1">
-    <% files.each do |unused, path| %>
-      <ComponentRef Id="<%= File.basename(path) %>" />
+    <% require 'rexml/document' %>
+    <% wxs = REXML::Document.new File.read('wix/Sourcery.wxs') %>
+    <% components = REXML::XPath.match wxs, '//Component' %>
+    <% components.map! { |part| part.attributes['Id'] } %>
+    <% components.each do |id| %>
+      <ComponentRef Id="<%= id %>" />
     <% end %>
     </Feature>
   </Fragment>
-
-  <Fragment>
-    <% files.each do |source, dest| %>
-      <% dir = File.dirname(dest) %>
-      <% dir = 'INSTALLDIR' if dir == '.' %>
-      <DirectoryRef Id="<%= dir %>">
-        <Component Id="<%= File.basename(source) %>">
-          <File Id="<%= File.basename(source) %>" Source="<%= source %>" />
-        </Component>
-      </DirectoryRef>
-    <% end %>
-  </Fragment>
+  <% end %>
 </Wix>

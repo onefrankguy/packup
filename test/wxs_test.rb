@@ -66,26 +66,6 @@ class PackupWxsTest < Test::Unit::TestCase
     assert_equal 'Magic', dirs.first.attributes['Name']
   end
 
-  def test_wxs_file_has_file_component
-    Packup.stuff 'Magic' do
-      file 'README.md' => 'README.md'
-    end
-    Rake::Task['wix/Magic.wxs'].invoke
-    wxs = REXML::Document.new File.read('wix/Magic.wxs')
-    elem = REXML::XPath.first wxs, '//File'
-    assert_equal 'README.md', elem.attributes['Source']
-  end
-
-  def test_wxs_file_has_directory_component
-    Packup.stuff 'Magic' do
-      file 'README.md' => 'Wand/README.md'
-    end
-    Rake::Task['wix/Magic.wxs'].invoke
-    wxs = REXML::Document.new File.read('wix/Magic.wxs')
-    dirs = REXML::XPath.match wxs, '//Directory'
-    assert dirs.any? { |dir| dir.attributes['Name'] == 'Wand' }
-  end
-
   def test_wxs_file_creates_source_file
     Packup.stuff 'Magic' do
       file 'README.md' => 'README.md'
@@ -100,5 +80,19 @@ class PackupWxsTest < Test::Unit::TestCase
     end
     Rake::Task['wix/Magic.wxs'].invoke
     assert File.directory?('wix/src/Wand')
+  end
+
+  def test_wxs_file_references_sourcery_components
+    Packup.stuff 'Magic' do
+      file 'README.md' => 'README.md'
+    end
+    Rake::Task['wix/Magic.wxs'].invoke
+    sourcery = REXML::Document.new File.read('wix/Sourcery.wxs')
+    components = REXML::XPath.match sourcery, '//Component'
+    components.map! { |component| component.attributes['Id'] }
+    wxs = REXML::Document.new File.read('wix/Magic.wxs')
+    refs = REXML::XPath.match wxs, '//ComponentRef'
+    refs.map! { |ref| ref.attributes['Id'] }
+    assert_equal components, refs
   end
 end

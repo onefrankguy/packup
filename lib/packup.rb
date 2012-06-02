@@ -44,6 +44,7 @@ class Packup
     make_sourcery_file_task
     make_wxs_file_task
     make_wixobj_file_task
+    make_sourcery_wixobj_file_task
     make_msi_file_task
   end
 
@@ -90,12 +91,13 @@ class Packup
       args << '-ag'     # Auto generate GUIDs
       args << '-ke'     # Keep empty directories
       args << '-template fragment'
-      args << '-dir INSTALLDIR'
+      args << '-dr INSTALLDIR'
       args << '-var var.Source'
       args = args.join(' ')
       sh "heat dir wix/src #{args} -out #{t.name}"
     end
     sourcery.comment = 'Create the Sourcery.wxs file'
+    sourcery.enhance ['wix']
     sourcery.enhance @files.values.map { |dest| File.join('wix', 'src', dest) }
   end
 
@@ -110,7 +112,9 @@ class Packup
     end
     wxs.comment = "Create the #{name}.wxs file"
     wxs.enhance ['wix']
-    wxs.enhance @files.values.map { |dest| File.join('wix', 'src', dest) }
+    if Rake::FileTask.task_defined? 'wix/Sourcery.wxs'
+      wxs.enhance ['wix/Sourcery.wxs']
+    end
   end
 
   def make_wixobj_file_task
@@ -122,12 +126,23 @@ class Packup
     wixobj.enhance ["wix/#{name}.wxs"]
   end
 
+  def make_sourcery_wixobj_file_task
+    return unless Rake::FileTask.task_defined? 'wix/Sourcery.wxs'
+    wixobj = Rake::FileTask.define_task 'wix/Sourcery.wixobj' do |t|
+      sh "candle -nologo wix/Sourcery.wxs -dSource=wix/src -o #{t.name}"
+    end
+    wixobj.comment = 'Create the Sourcery.wixobj file'
+    wixobj.enhance ['wix/Sourcery.wxs']
+  end
+
   def make_msi_file_task
     return if Rake::FileTask.task_defined? "wix/#{name}.msi"
+    wixobjs = Rake::FileTask.tasks.select { |t| t.name.end_with? '.wixobj' }
+    wixobjs.map! { |t| t.name }
     msi = Rake::FileTask.define_task "wix/#{name}.msi" do |t|
-      sh "light -nologo wix/#{name}.wixobj -o #{t.name}"
+      sh "light -nologo #{wixobjs.join(' ')} -o #{t.name}"
     end
     msi.comment = "Create the #{name}.msi file"
-    msi.enhance ["wix/#{name}.wixobj"]
+    msi.enhance wixobjs
   end
 end
