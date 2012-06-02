@@ -42,10 +42,18 @@ class Packup
     make_source_file_tasks
     make_destination_file_tasks
     make_sourcery_wxs_file_task
+    make_sourcery_wixobj_file_task
     make_product_wxs_file_task
     make_product_wixobj_file_task
-    make_sourcery_wixobj_file_task
     make_msi_file_task
+  end
+
+  def make_wix_folder_task
+    return if Rake::FileTask.task_defined? 'wix'
+    wix = Rake::FileTask.define_task 'wix' do |t|
+      FileUtils.mkpath t.name
+    end
+    wix.comment = 'Create the WiX folder'
   end
 
   def make_source_file_tasks 
@@ -72,14 +80,6 @@ class Packup
     end
   end
 
-  def make_wix_folder_task
-    return if Rake::FileTask.task_defined? 'wix'
-    wix = Rake::FileTask.define_task 'wix' do |t|
-      FileUtils.mkpath t.name
-    end
-    wix.comment = 'Create the WiX folder'
-  end
-
   def make_sourcery_wxs_file_task
     return if Rake::FileTask.task_defined? 'wix/Sourcery.wxs'
     return if @files.empty?
@@ -99,6 +99,15 @@ class Packup
     sourcery.comment = 'Create the Sourcery.wxs file'
     sourcery.enhance ['wix']
     sourcery.enhance @files.values.map { |dest| File.join('wix', 'src', dest) }
+  end
+
+  def make_sourcery_wixobj_file_task
+    return unless Rake::FileTask.task_defined? 'wix/Sourcery.wxs'
+    wixobj = Rake::FileTask.define_task 'wix/Sourcery.wixobj' do |t|
+      sh "candle -nologo wix/Sourcery.wxs -dSource=wix/src -o #{t.name}"
+    end
+    wixobj.comment = 'Create the Sourcery.wixobj file'
+    wixobj.enhance ['wix/Sourcery.wxs']
   end
 
   def make_product_wxs_file_task
@@ -124,15 +133,6 @@ class Packup
     end
     wixobj.comment = "Create the #{name}.wixobj file"
     wixobj.enhance ["wix/#{name}.wxs"]
-  end
-
-  def make_sourcery_wixobj_file_task
-    return unless Rake::FileTask.task_defined? 'wix/Sourcery.wxs'
-    wixobj = Rake::FileTask.define_task 'wix/Sourcery.wixobj' do |t|
-      sh "candle -nologo wix/Sourcery.wxs -dSource=wix/src -o #{t.name}"
-    end
-    wixobj.comment = 'Create the Sourcery.wixobj file'
-    wixobj.enhance ['wix/Sourcery.wxs']
   end
 
   def make_msi_file_task
