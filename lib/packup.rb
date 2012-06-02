@@ -64,12 +64,6 @@ class Packup
       task.comment = "Create the #{dest} #{type}"
       task.enhance ['wix', source]
     end
-    files = @files.keys.reject { |src| Rake::FileTask.task_defined?(src) }
-    files.each do |source|
-      type = File.directory?(source) ? 'folder' : 'file'
-      task = Rake::FileTask.define_task source
-      task.comment = "Create the #{source} #{type}"
-    end
   end
 
   def make_wix_folder_task
