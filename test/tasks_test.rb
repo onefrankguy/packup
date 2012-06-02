@@ -65,4 +65,9 @@ class PackupTasksTest < Test::Unit::TestCase
     Packup.stuff 'Magic'
     assert !Rake::FileTask.task_defined?('wix/Sourcery.wixobj')
   end
+
+  def test_create_clean_task
+    Packup.stuff 'Magic'
+    assert Rake::Task.task_defined? :clean
+  end
 end
