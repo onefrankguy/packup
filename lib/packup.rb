@@ -39,9 +39,19 @@ class Packup
 
   def make_tasks
     make_wix_folder_task
+    make_source_file_tasks
     make_wxs_file_task
     make_wixobj_file_task
     make_msi_file_task
+  end
+
+  def make_source_file_tasks 
+    files = @files.keys.reject { |src| Rake::FileTask.task_defined?(src) }
+    files.each do |source|
+      type = File.directory?(source) ? 'folder' : 'file'
+      task = Rake::FileTask.define_task source
+      task.comment = "Create the #{source} #{type}"
+    end
   end
 
   def make_wix_folder_task
