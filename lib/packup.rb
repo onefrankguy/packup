@@ -40,12 +40,30 @@ class Packup
   def make_tasks
     make_wix_folder_task
     make_source_file_tasks
+    make_destination_file_tasks
     make_wxs_file_task
     make_wixobj_file_task
     make_msi_file_task
   end
 
   def make_source_file_tasks 
+    files = @files.keys.reject { |src| Rake::FileTask.task_defined?(src) }
+    files.each do |source|
+      type = File.directory?(source) ? 'folder' : 'file'
+      task = Rake::FileTask.define_task source
+      task.comment = "Create the #{source} #{type}"
+    end
+  end
+
+  def make_destination_file_tasks
+    @files.each do |source, destination|
+      dest = File.join('wix', 'src', destination)
+      next if Rake::FileTask.task_defined? dest
+      type = File.directory?(source) ? 'folder' : 'file'
+      task = Rake::FileTask.define_task dest
+      task.comment = "Create the #{dest} #{type}"
+      task.enhance ['wix', source]
+    end
     files = @files.keys.reject { |src| Rake::FileTask.task_defined?(src) }
     files.each do |source|
       type = File.directory?(source) ? 'folder' : 'file'

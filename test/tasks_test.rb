@@ -34,4 +34,11 @@ class PackupTasksTest < Test::Unit::TestCase
     end
     assert Rake::FileTask.task_defined? 'README.md'
   end
+
+  def test_create_destination_file_task
+    Packup.stuff 'Magic' do
+      file 'README.md' => 'README.md'
+    end
+    assert Rake::FileTask.task_defined? 'wix/src/README.md'
+  end
 end
