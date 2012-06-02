@@ -98,19 +98,20 @@ class Packup
 
   def make_sourcery_wxs_file_task
     return if Rake::FileTask.task_defined? 'wix/Sourcery.wxs'
-    return if @files.empty?
     sourcery = Rake::FileTask.define_task 'wix/Sourcery.wxs' do |t|
-      args = []
-      args << '-nologo' # Skip printing of the WiX logo
-      args << '-sfrag'  # Suppress fragments
-      args << '-srd'    # Don't harvest the root directory e.g. wix\src
-      args << '-ag'     # Auto generate GUIDs
-      args << '-ke'     # Keep empty directories
-      args << '-template fragment'
-      args << '-dr INSTALLDIR'
-      args << '-var var.Source'
-      args = args.join(' ')
-      sh "heat dir wix/src #{args} -out #{t.name}"
+      if File.directory? 'wix/src'
+        args = []
+        args << '-nologo' # Skip printing of the WiX logo
+        args << '-sfrag'  # Suppress fragments
+        args << '-srd'    # Don't harvest the root directory e.g. wix\src
+        args << '-ag'     # Auto generate GUIDs
+        args << '-ke'     # Keep empty directories
+        args << '-template fragment'
+        args << '-dr INSTALLDIR'
+        args << '-var var.Source'
+        args = args.join(' ')
+        sh "heat dir wix/src #{args} -out #{t.name}"
+      end
     end
     sourcery.comment = 'Create the Sourcery.wxs file'
     sourcery.enhance ['wix']
