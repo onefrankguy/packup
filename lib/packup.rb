@@ -276,6 +276,6 @@ class Packup
     test = Rake::Task.define_task :test do
       Rake.sh "smoke -nologo wix/#{name}.msi"
     end
-    test.comment = 'Test the MSI'
+    test.comment = 'Validate the MSI'
   end
 end
