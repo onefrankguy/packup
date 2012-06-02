@@ -16,9 +16,6 @@ spec = Gem::Specification.new do |s|
   s.email = 'me@frankmitchell.org'
   s.homepage = 'https://github.com/elimossinary/packup'
 
-  s.rdoc_options = ['--charset=UTF-8']
-  s.extra_rdoc_files = %w[README.md]
-
   s.files = `git ls-files`.split("\n")
   s.files.reject! { |file| file =~ /^\./ }
 
