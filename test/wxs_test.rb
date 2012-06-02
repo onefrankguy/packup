@@ -85,4 +85,20 @@ class PackupWxsTest < Test::Unit::TestCase
     dirs = REXML::XPath.match wxs, '//Directory'
     assert dirs.any? { |dir| dir.attributes['Name'] == 'Wand' }
   end
+
+  def test_wxs_file_creates_source_file
+    Packup.stuff 'Magic' do
+      file 'README.md' => 'README.md'
+    end
+    Rake::Task['wix/Magic.wxs'].invoke
+    assert File.exist?('wix/src/README.md')
+  end
+
+  def test_wxs_file_creates_source_folder
+    Packup.stuff 'Magic' do
+      file 'README.md' => 'Wand/README.md'
+    end
+    Rake::Task['wix/Magic.wxs'].invoke
+    assert File.directory?('wix/src/Wand')
+  end
 end

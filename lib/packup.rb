@@ -60,7 +60,11 @@ class Packup
       dest = File.join('wix', 'src', destination)
       next if Rake::FileTask.task_defined? dest
       type = File.directory?(source) ? 'folder' : 'file'
-      task = Rake::FileTask.define_task dest
+      task = Rake::FileTask.define_task dest do |t|
+        folder = File.dirname(t.name)
+        FileUtils.mkpath folder unless File.directory? folder
+        FileUtils.copy source, t.name
+      end
       task.comment = "Create the #{dest} #{type}"
       task.enhance ['wix', source]
     end
@@ -85,6 +89,7 @@ class Packup
     end
     wxs.comment = "Create the #{name}.wxs file"
     wxs.enhance ['wix']
+    wxs.enhance @files.values.map { |dest| File.join('wix', 'src', dest) }
   end
 
   def make_wixobj_file_task
