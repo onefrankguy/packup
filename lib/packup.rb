@@ -41,9 +41,9 @@ class Packup
     make_wix_folder_task
     make_source_file_tasks
     make_destination_file_tasks
-    make_sourcery_file_task
-    make_wxs_file_task
-    make_wixobj_file_task
+    make_sourcery_wxs_file_task
+    make_product_wxs_file_task
+    make_product_wixobj_file_task
     make_sourcery_wixobj_file_task
     make_msi_file_task
   end
@@ -80,7 +80,7 @@ class Packup
     wix.comment = 'Create the WiX folder'
   end
 
-  def make_sourcery_file_task
+  def make_sourcery_wxs_file_task
     return if Rake::FileTask.task_defined? 'wix/Sourcery.wxs'
     return if @files.empty?
     sourcery = Rake::FileTask.define_task 'wix/Sourcery.wxs' do |t|
@@ -101,7 +101,7 @@ class Packup
     sourcery.enhance @files.values.map { |dest| File.join('wix', 'src', dest) }
   end
 
-  def make_wxs_file_task
+  def make_product_wxs_file_task
     return if Rake::FileTask.task_defined? "wix/#{name}.wxs"
     wxs = Rake::FileTask.define_task "wix/#{name}.wxs" do |t|
       template_file = File.join(File.dirname(__FILE__), '..', 'templates', 'product.wxs.erb')
@@ -117,7 +117,7 @@ class Packup
     end
   end
 
-  def make_wixobj_file_task
+  def make_product_wixobj_file_task
     return if Rake::FileTask.task_defined? "wix/#{name}.wixobj"
     wixobj = Rake::FileTask.define_task "wix/#{name}.wixobj" do |t|
       sh "candle -nologo wix/#{name}.wxs -o #{t.name}"
