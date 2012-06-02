@@ -61,7 +61,7 @@ class Packup
     task = Rake::Task.define_task :clean do
       FileUtils.remove_dir 'wix', true
     end
-    task.comment = 'Removes the WiX folder'
+    task.comment = 'Remove the WiX folder'
   end
 
   def make_wix_folder_task
