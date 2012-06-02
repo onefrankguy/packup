@@ -55,6 +55,7 @@ class Packup
     make_product_wixobj_file_task
     make_msi_file_task
     make_msi_task
+    make_test_task
   end
 
   def make_clean_task
@@ -157,7 +158,7 @@ class Packup
     wixobjs = Rake::FileTask.tasks.select { |t| t.name.end_with? '.wixobj' }
     wixobjs.map! { |t| t.name }
     msi = Rake::FileTask.define_task "wix/#{name}.msi" do |t|
-      sh "light -nologo #{wixobjs.join(' ')} -o #{t.name}"
+      sh "light -nologo -sval #{wixobjs.join(' ')} -o #{t.name}"
     end
     msi.comment = "Create the #{name}.msi file"
     msi.enhance wixobjs
@@ -168,5 +169,13 @@ class Packup
     msi = Rake::Task.define_task :msi
     msi.comment = "Create the MSI"
     msi.enhance ["wix/#{name}.msi"]
+  end
+
+  def make_test_task
+    return if Rake::Task.task_defined? :test
+    test = Rake::Task.define_task :test do
+      sh "smoke -nologo wix/#{name}.msi"
+    end
+    test.comment = 'Test the MSI'
   end
 end

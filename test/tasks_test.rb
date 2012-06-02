@@ -61,4 +61,9 @@ class PackupTasksTest < Test::Unit::TestCase
     Packup.stuff 'Magic'
     assert Rake::Task.task_defined? :msi
   end
+
+  def test_create_test_task
+    Packup.stuff 'Magic'
+    assert Rake::Task.task_defined? :test
+  end
 end
