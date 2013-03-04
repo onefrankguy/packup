@@ -188,7 +188,6 @@ class Packup
         args << '-sfrag'  # Suppress fragments
         args << '-srd'    # Don't harvest the root directory e.g. wix\src
         args << '-ag'     # Auto generate GUIDs
-        args << '-ke'     # Keep empty directories
         args << '-template fragment'
         args << '-dr INSTALLDIR'
         args << '-var var.Source'
