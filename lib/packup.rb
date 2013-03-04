@@ -161,6 +161,7 @@ class Packup
 
   def make_copy_file_tasks
     @files.each do |source, destination|
+      next if source == destination
       next if Rake::FileTask.task_defined? destination
       type = File.directory?(source) ? 'folder' : 'file'
       task = Rake::FileTask.define_task destination do |t|
@@ -188,7 +189,6 @@ class Packup
         args << '-sfrag'  # Suppress fragments
         args << '-srd'    # Don't harvest the root directory e.g. wix\src
         args << '-ag'     # Auto generate GUIDs
-        args << '-ke'     # Keep empty directories
         args << '-template fragment'
         args << '-dr INSTALLDIR'
         args << '-var var.Source'
