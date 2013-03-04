@@ -11,7 +11,7 @@ spec = Gem::Specification.new do |s|
   s.description = 'This gem provides a simple DSL for making MSI packages.'
 
   s.requirements << 'WiX Toolset, v3.6 or greater'
-  s.add_runtime_dependency 'rake', '~> 0.9.2'
+  s.add_runtime_dependency 'rake', '~> 10.0.3'
 
   s.author = 'Frank Mitchell'
   s.email = 'me@frankmitchell.org'

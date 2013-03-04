@@ -26,7 +26,9 @@ Build a MSI and install it:
 Dependencies
 ------------
 
-Packup requires the [WiX Toolset][wix] be installed, and the binaries be reachable from the PATH environment variable.
+Packup requires the [WiX Toolset][wix] be installed. If the WIX_HOME environment
+variable is set, Packup will look for binaries in a "bin" folder there. If the
+toolset can't be found, it will assume the binaries are on your PATH.
 
 License
 -------
