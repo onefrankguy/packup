@@ -5,7 +5,7 @@ class Packup
   ##
   # In a pre-alpha state at the moment.
 
-  VERSION = '0.0.1.pre'
+  VERSION = '0.1.0'
 
   ##
   # Excutes the Packup DSL to define your package's definition
