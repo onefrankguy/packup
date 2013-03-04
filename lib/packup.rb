@@ -193,7 +193,7 @@ class Packup
         args << '-dr INSTALLDIR'
         args << '-var var.Source'
         args = args.join(' ')
-        Rake.sh "heat dir wix/src #{args} -out #{t.name}"
+        wix_run 'heat', "dir wix/src #{args} -out #{t.name}"
       end
     end
     sourcery.comment = 'Create the Sourcery.wxs file'
@@ -207,7 +207,7 @@ class Packup
   def make_sourcery_wixobj_file_task
     return unless Rake::FileTask.task_defined? 'wix/Sourcery.wxs'
     wixobj = Rake::FileTask.define_task 'wix/Sourcery.wixobj' do |t|
-      Rake.sh "candle -nologo wix/Sourcery.wxs -dSource=wix/src -o #{t.name}"
+      wix_run 'candle', "-nologo wix/Sourcery.wxs -dSource=wix/src -o #{t.name}"
     end
     wixobj.comment = 'Create the Sourcery.wixobj file'
     wixobj.enhance ['wix/Sourcery.wxs']
@@ -238,7 +238,7 @@ class Packup
   def make_product_wixobj_file_task
     return if Rake::FileTask.task_defined? "wix/#{name}.wixobj"
     wixobj = Rake::FileTask.define_task "wix/#{name}.wixobj" do |t|
-      Rake.sh "candle -nologo wix/#{name}.wxs -o #{t.name}"
+      wix_run 'candle', "-nologo wix/#{name}.wxs -o #{t.name}"
     end
     wixobj.comment = "Create the #{name}.wixobj file"
     wixobj.enhance ["wix/#{name}.wxs"]
@@ -252,7 +252,7 @@ class Packup
     wixobjs = Rake::FileTask.tasks.select { |t| t.name.end_with? '.wixobj' }
     wixobjs.map! { |t| t.name }
     msi = Rake::FileTask.define_task "wix/#{name}.msi" do |t|
-      Rake.sh "light -nologo -sval #{wixobjs.join(' ')} -o #{t.name}"
+      wix_run 'light', "-nologo -sval #{wixobjs.join(' ')} -o #{t.name}"
     end
     msi.comment = "Create the #{name}.msi file"
     msi.enhance wixobjs
@@ -274,8 +274,25 @@ class Packup
   def make_test_task
     return if Rake::Task.task_defined? :test
     test = Rake::Task.define_task :test do
-      Rake.sh "smoke -nologo wix/#{name}.msi"
+      wix_run 'smoke', "-nologo wix/#{name}.msi"
     end
     test.comment = 'Validate the MSI'
+  end
+
+  ##
+  # Gets the path to the specified WiX binary.
+
+  def wix_path binary
+    home = ENV['WIX_HOME'].to_s
+    return binary if home.empty?
+    home = File.join home, 'bin', binary
+    home = home.gsub '\\', '/'
+  end
+
+  ##
+  # Runs a WiX +binary+ with the given +arguments+.
+
+  def wix_run binary, arguments
+    Rake.sh "\"#{wix_path binary}\" #{arguments}"
   end
 end
